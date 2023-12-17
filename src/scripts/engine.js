@@ -26,6 +26,12 @@ function countDown() {
   }
 }
 
+function playSound(audioName) {
+  let audio = new Audio(`./assets/sounds/${audioName}.m4a`);
+  audio.volume = 0.5;
+  audio.play();
+}
+
 function randomSquare() {
   state.view.squares.forEach((square) => {
     square.classList.remove("enemy");
@@ -49,6 +55,7 @@ function addListenerHitBox() {
         state.values.result++;
         state.view.score.textContent = state.values.result; // update score
         state.values.hitPosition = null;
+        playSound('hit');
       }
     });
   });
