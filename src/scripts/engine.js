@@ -6,10 +6,25 @@ const state = {
     score: document.querySelector("#score"),
   },
   values: {
-    timerId: null,
+    timerId: setInterval(randomSquare, 1000),
+    countDownTimerId: setInterval(countDown, 1000),
     gameVelocity: 1000,
+    hitPosition: 0,
+    result: 0,
+    currentTime: 60,
   },
 };
+
+function countDown() {
+  state.values.currentTime--;
+  state.view.timeLeft.textContent = state.values.currentTime;
+
+  if(state.values.currentTime <= 0) {
+    clearInterval(state.values.countDownTimerId);
+    clearInterval(state.values.timerId);
+    alert("GAME OVER! Your final score is " + state.values.result);
+  }
+}
 
 function randomSquare() {
   state.view.squares.forEach((square) => {
@@ -19,6 +34,8 @@ function randomSquare() {
   let randomNumber = Math.floor(Math.random() * 9);
   let randomSquare = state.view.squares[randomNumber];
   randomSquare.classList.add("enemy");
+
+  state.values.hitPosition = randomSquare.id;
 }
 
 function moveEnemy() {
@@ -26,11 +43,19 @@ function moveEnemy() {
 }
 
 function addListenerHitBox() {
-  state.view.squares.forEach((square) => {});
+  state.view.squares.forEach((square) => {
+    square.addEventListener("mouseup", () => {
+      if (square.id === state.values.hitPosition) {
+        state.values.result++;
+        state.view.score.textContent = state.values.result; // update score
+        state.values.hitPosition = null;
+      }
+    });
+  });
 }
 
 function initialize() {
-  moveEnemy();
+  addListenerHitBox();
 }
 
 initialize();
